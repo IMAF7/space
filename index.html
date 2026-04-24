@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>空间.site | 无限可能 · 数字空间构建者</title>
+    <!-- 引入 Google Fonts 提升现代感 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (免费图标库) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0c12;
+            color: #eef2ff;
+            line-height: 1.5;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        /* 动态渐变背景 + 粒子效果(简化但高级) */
+        .bg-ambient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at 20% 30%, #0b1120, #03050b);
+        }
+
+        .bg-ambient::before {
+            content: "";
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(0,0,0,0) 70%);
+            animation: slowDrift 30s infinite alternate ease-in-out;
+        }
+
+        @keyframes slowDrift {
+            0% { transform: translate(0,0) rotate(0deg); opacity: 0.5; }
+            100% { transform: translate(5%, 5%) rotate(5deg); opacity: 1; }
+        }
+
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #11161f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d3a5e;
+            border-radius: 8px;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 28px;
+        }
+
+        /* 头部导航 */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 0 20px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid rgba(59,130,246,0.2);
+        }
+
+        .logo {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #FFFFFF, #3b82f6, #a855f7);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo i {
+            background: none;
+            color: #3b82f6;
+            font-size: 2rem;
+            background-clip: unset;
+            -webkit-background-clip: unset;
+            color: #3b82f6;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            font-weight: 500;
+        }
+        .nav-links a {
+            color: #cbd5e6;
+            text-decoration: none;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+        .nav-links a:hover {
+            color: white;
+            text-shadow: 0 0 6px #3b82f6;
+        }
+
+        /* 英雄区 */
+        .hero {
+            padding: 100px 0 80px;
+            text-align: center;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(59,130,246,0.15);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(59,130,246,0.4);
+            border-radius: 100px;
+            padding: 6px 18px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.3px;
+        }
+        .hero h1 {
+            font-size: 3.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(to right, #ffffff, #94a3f8, #60a5fa);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 24px;
+        }
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 680px;
+            margin: 0 auto 32px;
+            color: #9ca8bf;
+        }
+        .btn-group {
+            display: flex;
+            gap: 18px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 14px 32px;
+            border-radius: 40px;
+            font-weight: 600;
+            transition: all 0.25s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background: linear-gradient(105deg, #2563eb, #7c3aed);
+            color: white;
+            border: none;
+            box-shadow: 0 8px 20px rgba(37,99,235,0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(37,99,235,0.5);
+            background: linear-gradient(105deg, #3b82f6, #8b5cf6);
+        }
+        .btn-outline {
+            border: 1px solid #3b82f6;
+            background: rgba(0,0,0,0.3);
+            color: #e0e7ff;
+        }
+        .btn-outline:hover {
+            background: #1e2a4a;
+            border-color: #60a5fa;
+            color: white;
+        }
+
+        /* 统计 / 信任模块 */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            flex-wrap: wrap;
+            margin: 70px 0 50px;
+            text-align: center;
+        }
+        .stat-item h3 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f0f9ff, #90cdf4);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .stat-item p {
+            font-size: 0.9rem;
+            color: #8b9bcf;
+            letter-spacing: 1px;
+        }
+
+        /* 服务卡片区 (空间业务关键词) */
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 70px 0 48px;
+            letter-spacing: -0.3px;
+        }
+        .section-title span {
+            background: linear-gradient(120deg, #b2d3ff, #a78bfa);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            margin-bottom: 60px;
+        }
+        .card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(59,130,246,0.25);
+            border-radius: 32px;
+            padding: 32px 24px;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: #3b82f6aa;
+            background: rgba(20, 30, 55, 0.7);
+            box-shadow: 0 20px 35px -12px #0f172f;
+        }
+        .card-icon {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            color: #60a5fa;
+        }
+        .card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        .card p {
+            color: #b9c7e0;
+            line-height: 1.5;
+        }
+
+        /* 独特的“空间.site”域名展示模块 */
+        .domain-showcase {
+            background: linear-gradient(145deg, #0e1625, #070b14);
+            border-radius: 60px;
+            padding: 48px 32px;
+            margin: 50px 0 70px;
+            border: 1px solid #2d3c66;
+            text-align: center;
+        }
+        .domain-url {
+            font-family: monospace;
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #E0E7FF, #C4B5FD);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .domain-sub {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: #a0b3e0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 特性区块 2列布局 */
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 40px 0 60px;
+        }
+        .feature-item {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .feature-icon {
+            font-size: 1.8rem;
+            background: #1e293b;
+            padding: 12px;
+            border-radius: 24px;
+            color: #3b82f6;
+        }
+        .feature-text h4 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .feature-text p {
+            color: #9dabcf;
+        }
+
+        /* CTA 区域 */
+        .cta-section {
+            text-align: center;
+            background: radial-gradient(circle at 70% 20%, #111827, #030712);
+            border-radius: 64px;
+            padding: 60px 30px;
+            margin: 70px 0;
+            border: 1px solid #2f3a60;
+        }
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .cta-section .btn-primary {
+            margin-top: 12px;
+            padding: 16px 38px;
+            font-size: 1.1rem;
+        }
+
+        /* 页脚 */
+        footer {
+            border-top: 1px solid #1f2a44;
+            padding: 48px 0 36px;
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        .footer-copyright {
+            color: #6f7c9f;
+        }
+        .footer-social a {
+            color: #8ca3cf;
+            margin-left: 24px;
+            font-size: 1.25rem;
+            transition: 0.2s;
+        }
+        .footer-social a:hover {
+            color: white;
+        }
+
+        @media (max-width: 780px) {
+            .hero h1 {
+                font-size: 2.4rem;
+            }
+            .navbar {
+                flex-direction: column;
+                gap: 16px;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .domain-url {
+                font-size: 1.8rem;
+                word-break: break-all;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* 太空闪烁微动画 */
+        .glow-text {
+            animation: softPulse 3s infinite;
+        }
+        @keyframes softPulse {
+            0% { text-shadow: 0 0 0px rgba(59,130,246,0);}
+            50% { text-shadow: 0 0 8px rgba(59,130,246,0.4);}
+            100% { text-shadow: 0 0 0px rgba(59,130,246,0);}
+        }
+    </style>
+</head>
+<body>
+<div class="bg-ambient"></div>
+
+<div class="container">
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-cube"></i> 
+            <span>空间.site</span>
+        </div>
+        <div class="nav-links">
+            <a href="#">首页</a>
+            <a href="#services">空间方案</a>
+            <a href="#features">技术优势</a>
+            <a href="#contact">合作</a>
+        </div>
+    </nav>
+
+    <!-- Hero 主视觉 -->
+    <section class="hero">
+        <div class="badge">
+            <i class="fas fa-globe"></i> 顶级数字空间 · 立即启航
+        </div>
+        <h1>构建属于你的<br>多维<span class="glow-text"> · 空间.site</span></h1>
+        <p>沉浸式网页体验 | 云端数字资产 | 下一代互联网入口<br>独一无二的 .site 域名，为你开拓无边界的在线版图。</p>
+        <div class="btn-group">
+            <a href="#" class="btn btn-primary"><i class="fas fa-rocket"></i> 开启空间之旅</a>
+            <a href="#" class="btn btn-outline"><i class="fas fa-compass"></i> 探索案例</a>
+        </div>
+    </section>
+
+    <!-- 数据信任区域 (体现域名价值) -->
+    <div class="stats">
+        <div class="stat-item">
+            <h3>∞</h3>
+            <p>可扩展维度</p>
+        </div>
+        <div class="stat-item">
+            <h3>99.9%</h3>
+            <p>架构可靠性</p>
+        </div>
+        <div class="stat-item">
+            <h3>2.3k+</h3>
+            <p>合作空间项目</p>
+        </div>
+        <div class="stat-item">
+            <h3>.site</h3>
+            <p>新一代标识</p>
+        </div>
+    </div>
+
+    <!-- 服务卡片区（核心业务展现） -->
+    <div id="services">
+        <div class="section-title"><span>空间.site</span> · 核心服务矩阵</div>
+        <div class="grid-cards">
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-cubes"></i></div>
+                <h3>3D 虚拟空间</h3>
+                <p>基于WebGL的沉浸式3D场景，让品牌展厅、元宇宙活动在您的.site域名下栩栩如生。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                <h3>云原生架构</h3>
+                <p>弹性计算+边缘加速，确保空间.site 低延迟、高并发，全球访客秒级加载。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-chalkboard-user"></i></div>
+                <h3>协作工作区</h3>
+                <p>集成白板、文档与实时通话，打造团队专属的数字协作“空间”。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-database"></i></div>
+                <h3>去中心化存储</h3>
+                <p>IPFS 融合存储，数据确权，为您的空间.site 提供永久、安全的资产托管。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 域名亮点 unique 区块 -->
+    <div class="domain-showcase">
+        <i class="fas fa-link" style="font-size: 2rem; color:#3b82f6; margin-bottom: 12px; display: inline-block;"></i>
+        <div class="domain-url">空间.site</div>
+        <div class="domain-sub">
+            「.site」—— 代表网站，更代表无限可能的空间宇宙。精准、简洁、前瞻性域名，全球数字身份的革新选择。
+        </div>
+        <div style="margin-top: 28px;">
+            <span style="background:#1f2a46; padding:6px 16px; border-radius: 40px; font-size:0.85rem;"><i class="fas fa-check-circle"></i> 即刻注册，定义你的空间</span>
+        </div>
+    </div>
+
+    <!-- 独特优势 + 特性说明 -->
+    <div id="features">
+        <div class="section-title">为什么选择 <span>空间.site</span> ?</div>
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                <div class="feature-text">
+                    <h4>超快部署</h4>
+                    <p>一键开启属于你的站点模板，集成AI辅助建站，从0到1只需10分钟，让创意即刻上线。</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="feature-text">
+                    <h4>企业级安全</h4>
+                    <p>全链路SSL加密，DDoS高防，保障空间.site 下所有数据资产与用户隐私。</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="feature-text">
+                    <h4>多维数据分析</h4>
+                    <p>实时用户热力图、访客行为洞察，助你优化空间布局，提升转化和体验。</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas fa-palette"></i></div>
+                <div class="feature-text">
+                    <h4>完全自定义</h4>
+                    <p>开放API和丰富插件生态，从UI设计到后端逻辑均可深度定制，释放创造力。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 灵感/引用 动态区块 -->
+    <div style="background: rgba(59,130,246,0.05); border-radius: 48px; padding: 30px 24px; margin: 30px 0; text-align: center; backdrop-filter: blur(4px);">
+        <i class="fas fa-quote-left" style="font-size: 2rem; color: #3b82f6; opacity: 0.7;"></i>
+        <p style="font-size: 1.2rem; max-width: 700px; margin: 12px auto; font-style: italic; color: #cddcff;">空间不再是物理的限制 —— 你的思想在哪里，空间.site 就在哪里延伸。</p>
+        <p style="margin-top: 16px;">—— 空间站点 设计哲学</p>
+    </div>
+
+    <!-- 联系与 CTA 区域 -->
+    <div id="contact" class="cta-section">
+        <h2>准备好定义你的<span style="background: linear-gradient(120deg,#a5f3fc,#7c3aed); background-clip:text; -webkit-background-clip:text; color:transparent;"> 专属空间 </span>了吗？</h2>
+        <p style="margin-bottom: 20px; max-width: 500px; margin-left: auto; margin-right: auto;">立即获取 .site 域名 + 空间构建方案，限量开放内测资格。</p>
+        <a href="#" class="btn btn-primary" style="background: linear-gradient(135deg,#1e40af,#7e22ce);"><i class="fas fa-paper-plane"></i> 预定空间席位</a>
+        <div style="margin-top: 32px; font-size: 0.9rem; color: #7e8bb6;">
+            <i class="fas fa-envelope"></i> hello@空间.site  ·  <i class="fas fa-headset"></i> 专属顾问1v1
+        </div>
+    </div>
+
+    <!-- footer 部分 -->
+    <footer>
+        <div class="footer-copyright">
+            © 2025 空间.site — 构建未来数字栖息地<br>
+            <span style="font-size: 0.8rem;">所有引用的商标与标识均为其各自所有者财产</span>
+        </div>
+        <div class="footer-social">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-discord"></i></a>
+            <a href="#"><i class="fas fa-globe"></i></a>
+        </div>
+    </footer>
+</div>
+
+<!-- 简单的交互脚本: 导航滚动模拟 & 控制台铭牌 -->
+<script>
+    // 平滑滚动 (针对导航内锚链接，如果想要添加内部跳转可增加)
+    document.querySelectorAll('.nav-links a, .btn-group a, .btn-primary, .btn-outline').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href && href !== '#' && href.startsWith('#')) {
+                e.preventDefault();
+                const targetElem = document.querySelector(href);
+                if(targetElem) {
+                    targetElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            } else if (href === '#') {
+                e.preventDefault();
+                // 空链接不跳转，仅演示
+                if(this.classList.contains('btn-primary') && this.innerText.includes('开启空间之旅')) {
+                    alert('✨ 欢迎来到 空间.site — 您的无限数字空间即将开启！ (演示交互)');
+                } else if(this.innerText.includes('预定空间席位')) {
+                    alert('🚀 感谢您对空间.site的兴趣！内测预约已记录 (演示版本)');
+                } else if(this.innerText.includes('探索案例')) {
+                    alert('🌌 案例展示区即将开放，敬请期待更多精彩3D空间实例。');
+                } else {
+                    // 优雅提示
+                    console.log('导航演示: 空间.site 品牌互动');
+                }
+            }
+        });
+    });
+
+    // 控制台趣味输出
+    console.log("%c✨ 空间.site | 塑造无界数字体验", "color: #3b82f6; font-size: 16px; font-weight: bold;");
+    console.log("%c.site 域名 + 深度空间定制 = 下一代互联网门户", "color: #a855f7; font-size: 12px;");
+
+    // 卡片轻微加载动画 (intersection效果简化)
+    const cards = document.querySelectorAll('.card');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0px)';
+            }
+        });
+    }, { threshold: 0.1 });
+    cards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.5s ease, transform 0.4s ease';
+        observer.observe(card);
+    });
+
+    // 展示区块淡入
+    const fadeElements = document.querySelectorAll('.domain-showcase, .features-grid, .stats, .cta-section');
+    const fadeObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+    fadeElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(18px)';
+        el.style.transition = 'opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.5s ease';
+        fadeObserver.observe(el);
+    });
+    
+    // 统计数字动态展示 (可选简单效果，展示数据驱动氛围)
+    const statNumbers = document.querySelectorAll('.stat-item h3');
+    const displayNumbers = () => {
+        statNumbers.forEach(stat => {
+            const text = stat.innerText;
+            if(text === '∞') return;
+            if(text === '99.9%') {
+                if(stat.getAttribute('data-animated')) return;
+                stat.setAttribute('data-animated', 'true');
+                let current = 0;
+                const target = 99.9;
+                const step = (target / 40);
+                const timer = setInterval(() => {
+                    current += step;
+                    if(current >= target) {
+                        stat.innerText = '99.9%';
+                        clearInterval(timer);
+                    } else {
+                        stat.innerText = current.toFixed(1) + '%';
+                    }
+                }, 25);
+            } else if(text === '2.3k+') {
+                if(stat.getAttribute('data-animated')) return;
+                stat.setAttribute('data-animated', 'true');
+                let curr = 0;
+                const targetNum = 2300;
+                const stepVal = targetNum / 45;
+                const timer = setInterval(() => {
+                    curr += stepVal;
+                    if(curr >= targetNum) {
+                        stat.innerText = '2.3k+';
+                        clearInterval(timer);
+                    } else {
+                        stat.innerText = Math.floor(curr) + '+';
+                    }
+                }, 20);
+            }
+        });
+    };
+    const statsObserver = new IntersectionObserver((entries) => {
+        if(entries[0].isIntersecting) {
+            displayNumbers();
+        }
+    }, { threshold: 0.3 });
+    const statContainer = document.querySelector('.stats');
+    if(statContainer) statsObserver.observe(statContainer);
+</script>
+</body>
+</html>
